@@ -1,40 +1,46 @@
----
 name: eShopOnWeb CI
+
 on:
   push:
     branches:
       - main
-  workflow_dispatch: null
+  workflow_dispatch:
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
     environment: Development
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+
       - name: Restore solution
         run: dotnet restore eShopOnWeb.sln
+
       - name: Build solution
         run: dotnet build eShopOnWeb.sln --configuration Release --no-restore
+
       - name: Run Unit Tests
-        run: dotnet test tests/UnitTests/UnitTests.csproj --no-build --configuration
-          Release
+        run: dotnet test tests/UnitTests/UnitTests.csproj --no-build --configuration Release
+
       - name: Run Integration Tests
-        run: dotnet test tests/IntegrationTests/IntegrationTests.csproj --no-build
-          --configuration Release
+        run: dotnet test tests/IntegrationTests/IntegrationTests.csproj --no-build --configuration Release
+
       - name: Run Functional Tests
-        run: dotnet test tests/FunctionalTests/FunctionalTests.csproj --no-build
-          --configuration Release
+        run: dotnet test tests/FunctionalTests/FunctionalTests.csproj --no-build --configuration Release
+
       - name: Run API Tests
-        run: dotnet test
-          tests/PublicApiIntegrationTests/PublicApiIntegrationTests.csproj
-          --no-build --configuration Release
+        run: dotnet test tests/PublicApiIntegrationTests/PublicApiIntegrationTests.csproj --no-build --configuration Release
+
       - name: Publish Web App
         run: dotnet publish src/Web/Web.csproj -c Release -o publishedapp
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

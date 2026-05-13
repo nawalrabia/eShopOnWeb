@@ -1,36 +1,28 @@
+---
 name: eShopOnWeb CI
-
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-
+  workflow_dispatch: null
 jobs:
   buildandtest:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-
-      - name: Restore dependencies
+      - name: Restore
         run: dotnet restore
-
       - name: Build
         run: dotnet build --configuration Release --no-restore
-
       - name: Test
         run: dotnet test --no-build --verbosity normal
-
       - name: Publish
         run: dotnet publish src/Web/Web.csproj -c Release -o publishedapp
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
